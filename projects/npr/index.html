@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="icon" href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/237/raised-hand-with-fingers-splayed_emoji-modifier-fitzpatrick-type-1-2_1f590-1f3fb_1f3fb.png">
+    <title>Connor Montgomery</title>
+    <meta name="description" content="Connor Montgomery builds things that make your day better.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://npmcdn.com/tachyons@4.10.0/css/tachyons.min.css"/>
+    <style>
+        body, html {
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .link {
+            color: #000;
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom-style: solid;
+            border-color:#eee;
+            border-width: 2px;
+        }
+
+        .link:hover {
+            border-color: #000;
+        }
+
+        /* .link.external:after {
+          content: ' ↗';
+          font-size: 1rem;
+        } */
+
+        @media (prefers-color-scheme: dark) {
+            .white-bg { background: #333; }
+            .near-black { color: #eee; }
+            .black { color: #fff; }
+            .link { color: #aaa; border-color: #666; }
+            .link:hover { border-color: #aaa; }
+        }
+    </style>
+  </head>
+  <body class="sans-serif near-black mh3 white-bg">
+    <div class="lh-copy f4 mb6 mw7 mv5 mv6-ns">
+        <a href="/projects/" class="link f6">← Projects</a>
+        <h1 class="f2 lh-title black mb1 mt6">NPR for macOS</h1>
+        <div class="f5 f4-ns mb6">
+            <p>I built a macOS app to stream your favorite <a href="https://npr.org" class="link external">NPR</a> station. It sits in your menubar, and stays out of your way.</p>
+
+            <img src="npr.png" alt="NPR for macOS" />
+
+            <p>There are a few notable features:</p>
+
+            <ul>
+              <li>Toggle play/pause using the <code>macOS</code> media keys.</li>
+              <li>Change the current station via the <code>Preferences</code> window.</li>
+              <li>...that's it!</li>
+            </ul>
+
+            <p>The app was built in an afternoon, a few years back. It's built using <a href="https://swift.org" class="link external">Swift</a> and the source is available on <a href="https://github.com/connor/npr" class="link external">GitHub</a>.</p>
+        </div>
+        <div class="mt6 mb3">
+            <a href="mailto:c@cnnr.me" class="link fw5 f6 mr2">Email</a>
+            <a href="https://twitter.com/connor" class="link fw5 f6 mr2">Twitter</a>
+            <a href="https://github.com/connor" class="link fw5 f6 mr2">GitHub</a>
+            <a href="https://pinterest.com/cnnr" class="link fw5 f6">Pinterest</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+      var _gauges = _gauges || [];
+      (function() {
+        var t   = document.createElement('script');
+        t.type  = 'text/javascript';
+        t.async = true;
+        t.id    = 'gauges-tracker';
+        t.setAttribute('data-site-id', '5e74da3759eda15ca5bd5150');
+        t.setAttribute('data-track-path', 'https://track.gaug.es/track.gif');
+        t.src = 'https://d2fuc4clr7gvcn.cloudfront.net/track.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(t, s);
+      })();
+    </script>
+  </body>
+</html>
