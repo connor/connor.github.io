@@ -14,36 +14,110 @@
         }
         
         .link {
-            color: #000;
+            /* color: #000; */
+            color: #0044e4;
             font-weight: bold;
+            transition: none !important;
             padding-bottom: 1px;
-            border-bottom-style: solid;
-            border-color:#eee;
-            border-width: 2px;
+            /* border-bottom: 1px solid #0044e4 */
+            /* border-bottom-style: solid; */
+            /* border-bottom: 1px dotted #ddd; */
+            /* border-width: 2px; */
+        }
+
+        .link.active:hover {
+          border: none;
         }
 
         .link:hover {
-            border-color: #000;
+          border-bottom: 1px solid #0044e4;
+          transition: none;
         }
 
+        .hifive {
+          width: 50px;
+          height: 50px;
+          text-align: center;
+          display: table-cell;
+          vertical-align: middle;
+          text-decoration: none;
+        }
+
+        .hifive:hover {
+          background-color: #f0f0f0;
+        }
+        .cm-nav a { color: #000; border-bottom: none; }
+        .cm-nav a:hover { border-color: inherit; }
+        .cm-nav a.articles { color: #999; }
+        .cm-nav a.articles:hover { color: #000; }
         /* .link.external:after {
           content: ' ↗';
           font-size: 1rem;
         } */
 
+        .footer .link {
+          font-weight: normal;
+          border-bottom: 0;
+          color: #999;
+          transition: none;
+        }
+
+        .footer .link:hover {
+          color: #000;
+          border-bottom: 1px solid #000;
+        }
+
+        .footer em {
+          color: #999;
+        }
+
+        code {
+          border: 1px solid #dee2e6;
+          font-size: 1rem;
+          padding: 3px 10px;
+          border-radius: 3px;
+          white-space: nowrap;
+          -webkit-font-smoothing: antialiased;
+        }
+
         @media (prefers-color-scheme: dark) {
-            .white-bg { background: #333; }
+            .hifive { background-color: #111; }
+            .white-bg { background: #111; }
             .near-black { color: #eee; }
             .black { color: #fff; }
-            .link { color: #aaa; border-color: #666; }
-            .link:hover { border-color: #aaa; }
+            .link { color: #5b8cff; } 
+            .link:hover { border-bottom-color: inherit; }
+
+            .cm-nav a { color: #fff; border-bottom: none; }
+            .cm-nav a.articles { color: #999; }
+            .hifive:hover {
+              background-color: #222;
+            }
+            .footer .link:hover {
+              color: #fff;
+              border-bottom-color: #fff;
+            }
+
+            code {
+              background: #222;
+              border-color: #484848;
+            }
         }
     </style>
   </head>
   <body class="sans-serif near-black mh3 white-bg">
-    <div class="lh-copy f4 mb6 mw7 mv5 mv6-ns">
-        <a href="/projects/" class="link f6">← Projects</a>
-        <h1 class="f2 lh-title black mb1 mt6">NPR for macOS</h1>
+    <div class="lh-copy f4 mb6 mw7 mb5 mb6-ns center">
+        <div class="mt4 f5 overflow-hidden">
+          <div class="fl f3">
+            <a href="/" class="hifive br-100">🖐🏻</a>
+          </div>
+          <div class="cm-nav fr">
+            <a href="#" class="link mr4 active projects">Projects</a>
+            <a href="#" class="link articles">Articles</a>
+          </div>
+        </div>
+        <div class="cf"></div>
+        <h1 class="f1 lh-title black mb1 mt7">NPR for macOS</h1>
         <div class="f5 f4-ns mb6">
             <p>I built a macOS app to stream your favorite <a href="https://npr.org" class="link external">NPR</a> station. It sits in your menubar, and stays out of your way.</p>
 
@@ -57,12 +131,12 @@
               <li>...that's it!</li>
             </ul>
 
-            <p>The app was built in an afternoon, a few years back. It's built using <a href="https://swift.org" class="link external">Swift</a> and the source is available on <a href="https://github.com/connor/npr" class="link external">GitHub</a>.</p>
+            <p>The app was built in an afternoon, a few years back. It's built using <code>Swift</code> and the source is available on <a href="https://github.com/connor/npr" class="link external">GitHub</a>.</p>
         </div>
-        <div class="mt6 mb3">
-            <a href="mailto:c@cnnr.me" class="link fw5 f6 mr2">Email</a>
-            <a href="https://twitter.com/connor" class="link fw5 f6 mr2">Twitter</a>
-            <a href="https://github.com/connor" class="link fw5 f6 mr2">GitHub</a>
+        <div class="mt6 mb3 tc footer f6">
+            <a href="mailto:c@cnnr.me" class="link fw5 f6 mr2">Email</a> <em class="mr2">&bull;</em>
+            <a href="https://twitter.com/connor" class="link fw5 f6 mr2">Twitter</a> <em class="mr2">&bull;</em>
+            <a href="https://github.com/connor" class="link fw5 f6 mr2">GitHub</a> <em class="mr2">&bull;</em>
             <a href="https://pinterest.com/cnnr" class="link fw5 f6">Pinterest</a>
         </div>
     </div>
