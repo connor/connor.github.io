@@ -22,12 +22,21 @@ title: Connor Montgomery
 author: Connor Montgomery
 email: c@cnnr.me
 description: >- 
-  Hey there, I'm Connor. I'm a product-driven software engineer living in Kansas City. I have a thing for high fives.
+  I'm a product-driven software engineer living in Kansas City. High five!
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://cnnr.me" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://connor.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+image:
+  path: /social_avatar.jpg
 twitter:
   username: connor
   card: summary
+social:
+  name: Connor Montgomery
+  links:
+    - https://twitter.com/connor
+    - https://github.com/connor
+    - https://pinterest.com/cnnr
+    - https://www.linkedin.com/in/connormontgomery/
 
 github:
   repository_url: https://github.com/connor/connor.github.io
