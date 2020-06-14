@@ -127,7 +127,7 @@ import AVFoundation
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
-    let player:AVPlayer = AVPlayer.init()
+    let player = AVPlayer()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         guard let streamURL = URL.init(string: "https://kcurlive.umkc.edu/kcur893") else { return }
