@@ -453,3 +453,5 @@ This is a good stopping point for Part 1. Thanks so much for following along! I 
 In Part 2, we'll focus on adding a **Preferences** window, integrating keyboard shortcuts & adding some more functionality to the dropdown menu.
 
 To see when Part 2 is ready, follow me on [Twitter](https://www.twitter.com/connor) or subscribe to this blog's [RSS](/feed.xml) feed.
+
+Also, please consider [donating](https://www.npr.org/donations/support) to NPR.
