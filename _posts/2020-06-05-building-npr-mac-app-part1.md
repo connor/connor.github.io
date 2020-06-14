@@ -28,7 +28,7 @@ This will all be done using **Swift**.
 I am going to assume you have the following installed:
 * [Xcode](https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes) \>= 10.2
 * [Swift](http://swift.org/) \>= 5.0
-* [Cocoapods](https://cocoapods.org/) 
+* [Cocoapods](https://cocoapods.org/) (we'll use this in Part 2)
 
 ## [Step 0: Create the Project](#step-0-create-the-project)
 
