@@ -61,10 +61,10 @@
 <p>Last year, I built a simple <a href="https://github.com/connor/npr">macOS App</a> that lets you stream your favorite NPR station from your menubar. We’re going to recreate that.</p>
 
 <h2 id="end-result"><a href="#end-result">End Result</a></h2>
-<p>At the end of this 2-part series, we will have made a menubar Mac app to stream NPR audio streams. We weill have “reverse-engineeered” the way to search for stations via zipcode and built a macOS menubar app with the following features:</p>
+<p>At the end of this 2-part series, we will have made a menubar macOS app to stream NPR audio streams. We’ll have “reverse-engineeered” the way to search for stations via zipcode and built a macOS menubar app with the following features:</p>
 <ul>
-  <li>ability to livestream NPR</li>
-  <li>integration with macOS media key shortcuts (with supported keyboards)</li>
+  <li>ability to livestream an NPR station</li>
+  <li>integration with macOS media key shortcuts</li>
   <li>a standalone <code class="highlighter-rouge">Preferences</code> window</li>
   <li>ability to change &amp; save stations for future app launches.</li>
 </ul>
@@ -84,7 +84,7 @@
 <h2 id="step-0-create-the-project"><a href="#step-0-create-the-project">Step 0: Create the Project</a></h2>
 
 <blockquote class="callout">
-<strong>Note</strong>: if you'd like to skip this step, you can simply download the <a href="https://github.com/connor/NPR-Starter" title="NPR starter project">starter project</a>.
+<strong>Note</strong>: if you'd like to skip this step, you can simply download the <a href="https://github.com/connor/npr/tree/tutorial_part01_starting_point" title="NPR starter project">starter project</a>.
 </blockquote>
 
 <p>First things first, let’s create the project.</p>
@@ -111,7 +111,7 @@
   </li>
 </ul>
 
-<p>This is what my <strong>AppDelegate.swift</strong> looks like (again, you can download the <a href="https://github.com/connor/NPR-Starter">starter project</a> if you’d prefer):</p>
+<p>This is what my <strong>AppDelegate.swift</strong> looks like (again, you can download the <a href="https://github.com/connor/npr/tree/tutorial_part01_starting_point">starter project</a> if you’d prefer):</p>
 
 <p class="filename">AppDelegate.swift</p>
 
@@ -128,7 +128,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Ok, <strong>Build &amp; Run</strong> the project. You should have an empty App show up in your Dock.</p>
+<p>Ok, <strong>Build &amp; Run</strong> the project. You should have an empty App show up in your Dock. Woohoo!</p>
 
 <p><a href="/assets/images/npr_dock.png" target="_blank"><img src="/assets/images/npr_dock.png" alt="" /></a></p>
 
@@ -157,15 +157,17 @@
         Your browser does not support the audio tag.
 </audio>
 
-<p>voila! High five! 🖐🏻</p>
+<p>voilà! You should be able to play that stream right from your browser. High five! This is some progress.</p>
 
 <p>Be sure to note the URL of the audio stream somewhere; we’re going to be using that here shortly.</p>
 
-<p>Ok, so after doing some digging, we know how to <em>find</em> stations. Lets see how we can actually <em>stream</em> the station on a macOS app.</p>
+<p>Ok, so after doing some digging, we know how to <em>find</em> stations. Lets see how we can actually <em>stream</em> the station on a macOS app…</p>
 
 <h4 id="streaming-audio-in-swift"><a href="#streaming-audio-in-swift">Streaming audio in Swift</a></h4>
 
 <p>On iOS, macOS, watchOS &amp; tvOS, there is a handy framework provided by Apple, <code class="highlighter-rouge">AVFoundation</code>, that allows you to play and create audiovisual media. We’re going to be using that.</p>
+
+<p>Basically, you have an instance of the <code class="highlighter-rouge">AVPlayer</code> class, and you give it an <code class="highlighter-rouge">AVPlayerItem</code>. That’s it.</p>
 
 <p class="filename">AppDelegate.swift</p>
 
@@ -202,7 +204,7 @@
 <span class="p">),</span> <span class="kt">NSLocalizedDescription</span><span class="o">=</span><span class="kt">A</span> <span class="n">server</span> <span class="n">with</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">hostname</span> <span class="n">could</span> <span class="n">not</span> <span class="n">be</span> <span class="n">found</span><span class="o">.</span><span class="p">,</span> <span class="kt">NSErrorFailingURLStringKey</span><span class="o">=</span><span class="nv">https</span><span class="p">:</span><span class="c1">//kcurlive.umkc.edu/kcur893, NSErrorFailingURLKey=https://kcurlive.umkc.edu/kcur893, _kCFStreamErrorDomainKey=10}</span>
 </code></pre></div></div>
 
-<p>Well, I’m going to save you some Googling. <strong>tl;dr</strong> — macOS requires you to explicitly opt your app in to making and receiving network connections.</p>
+<p><strong>tl;dr</strong> — macOS requires you to explicitly opt your app in to making and receiving network connections. Since this is streaming from a URL and not our local filesystem, we need to tell the app that making network requests is allowed.</p>
 
 <p>In the Xcode project editor, with your application target selected, view the <code class="highlighter-rouge">Signing &amp; Capabilities</code> tab. From there, be sure to check <strong>Outgoing Connections (Client)</strong>.</p>
 
@@ -224,7 +226,16 @@
 
 <h2 id="step-2-adding-a-menubar-ui"><a href="#step-2-adding-a-menubar-ui">Step 2: Adding a menuBar UI</a></h2>
 
-<p>It’s pretty simple to make a menuBar UI. Take the following code in <code class="highlighter-rouge">AppDelegate.swift</code> —</p>
+<p>It’s pretty simple to make a menuBar UI. For now, there are two main concepts —</p>
+
+<ul>
+  <li><code class="highlighter-rouge">NSStatusBar</code> — an object that manages a collection of status items displayed within the system-wide menu bar.</li>
+  <li><code class="highlighter-rouge">NSStatusItem</code> — an individual element displayed in the system-wide <code class="highlighter-rouge">NSStatusBar</code>.</li>
+</ul>
+
+<p>So, a <code class="highlighter-rouge">StatusItem</code> belongs to a <code class="highlighter-rouge">StatusBar</code>. <a href="https://developer.apple.com/documentation/appkit/nsstatusitem">StatusItem</a> objects have <code class="highlighter-rouge">buttons</code> that you can style with either images or text.</p>
+
+<p>Take the following code in <code class="highlighter-rouge">AppDelegate.swift</code> —</p>
 
 <p class="filename">AppDelegate.swift</p>
 
@@ -267,7 +278,7 @@
 
 <p><a href="/assets/images/npr_hello_world.png" target="_blank"><img src="/assets/images/npr_hello_world.png" alt="" /></a></p>
 
-<p>🖐🏻</p>
+<p>🖐🏻!</p>
 
 <h4 id="toggling-play--pause"><a href="#toggling-play--pause">Toggling Play / Pause</a></h4>
 
@@ -330,7 +341,7 @@
 <ol>
   <li>An <em>empty</em> app launches in the Dock when the menubar app runs; we want it to only run in the menubar.</li>
   <li>The menubar title isn’t helpful.</li>
-  <li>There’s no way to quit the app</li>
+  <li>There’s no way to quit the app.</li>
 </ol>
 
 <p>Let’s fix both of those —</p>
@@ -365,7 +376,7 @@
 
 <p>Now that the assets are added to the project, we can go ahead and swap out that <code class="highlighter-rouge">Hello, world!</code> for… something a bit more helpful 😉</p>
 
-<p>In <code class="highlighter-rouge">AppDelegate.swift</code>, swap out the <code class="highlighter-rouge">Hello, world!</code> line with this:</p>
+<p>In <code class="highlighter-rouge">AppDelegate.swift</code>, replace the <code class="highlighter-rouge">Hello, world!</code> line with this:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Replace this line...</span>
 <span class="n">statusBarItem</span><span class="o">.</span><span class="n">button</span><span class="p">?</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">"Hello, world!"</span>
@@ -415,6 +426,16 @@
 <p>Now, we already know when the stream is set to playing or paused via the <code class="highlighter-rouge">togglePlayPause</code> method, we should be able to just have an <code class="highlighter-rouge">updateMenuIcon</code> method that updates itself when the stream is toggled. Let’s try that —</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@objc</span> <span class="kd">func</span> <span class="nf">togglePlayPause</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cm">/***
+    NOTE: the commented section below should already be here.
+    if isCurrentlyPlaying {
+        player.pause()
+        isCurrentlyPlaying = false
+    } else {
+        player.play()
+        isCurrentlyPlaying = true
+    }
+    ***/</span>
     <span class="nf">updateMenuIcon</span><span class="p">()</span>
 <span class="p">}</span>
 
@@ -433,11 +454,11 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p><strong>Build &amp; Run</strong> and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻</p>
+<p><strong>Build &amp; Run</strong> and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻!</p>
 
 <picture><video muted="" poster="/assets/images/npr_menu_with_icon_play_pause.png" src="/assets/videos/npr-play-pause-icon.mov" controls=""></video></picture>
 
-<p>Lastly, while we’re in this part of the codebase, let’s make the <code class="highlighter-rouge">Play / Pause</code> button title actually say what the action will be.</p>
+<p>Finally, while we’re in this part of the codebase, let’s make the <code class="highlighter-rouge">Play / Pause</code> button title actually say what the action will be.</p>
 
 <p>This will follow a very similar path from directly above, just with a few tweaks.</p>
 
@@ -466,10 +487,12 @@
 
 <p>Finally, in <code class="highlighter-rouge">applcationDidFinishLaunching</code>, just below the call to <code class="highlighter-rouge">updateMenuIcon()</code>, call <code class="highlighter-rouge">updatePlayPauseButtonTitle()</code>. Doing this will keep the button title and the menu icon in sync.</p>
 
-<p><strong>Build &amp; Run</strong> and we should have a <code class="highlighter-rouge">menuItem</code> that updates the title properly. Nice work so far!</p>
+<p><strong>Build &amp; Run</strong> and we should have a <code class="highlighter-rouge">menuItem</code> that updates the title properly.</p>
 
 <p><a href="/assets/images/npr_pause.png" target="_blank"><img src="/assets/images/npr_pause.png" alt="" /></a>
 <a href="/assets/images/npr_paused_progress.png" target="_blank"><img src="/assets/images/npr_paused_progress.png" alt="" /></a></p>
+
+<p>Nice work so far! We’ve got an app that works (as long you as hard-code the proper URL for the desired audio stream).</p>
 
 <hr />
 

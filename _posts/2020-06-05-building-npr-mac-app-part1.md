@@ -2,7 +2,7 @@
 layout: post
 title:  Building the NPR macOS App, Part 1 
 date:   2020-06-05 20:34:35 -0500
-categories: mac, swift, tutorial
+categories: macOS, swift, tutorial
 excerpt: >-
     Part 1 of a 2-part tutorial series. We walk through building the <a href="https://npr.org" target="_blank">NPR</a> macOS app together.
 image:
@@ -15,9 +15,9 @@ I love NPR. Our family listens to [Up First](https://www.npr.org/podcasts/510318
 Last year, I built a simple [macOS App](https://github.com/connor/npr) that lets you stream your favorite NPR station from your menubar. We’re going to recreate that.
 
 ## [End Result](#end-result)
-At the end of this 2-part series, we will have made a menubar Mac app to stream NPR audio streams. We weill have "reverse-engineeered" the way to search for stations via zipcode and built a macOS menubar app with the following features:
-* ability to livestream NPR
-* integration with macOS media key shortcuts (with supported keyboards)
+At the end of this 2-part series, we will have made a menubar macOS app to stream NPR audio streams. We'll have "reverse-engineeered" the way to search for stations via zipcode and built a macOS menubar app with the following features:
+* ability to livestream an NPR station
+* integration with macOS media key shortcuts
 * a standalone `Preferences` window
 * ability to change & save stations for future app launches.
 
@@ -34,7 +34,7 @@ I am going to assume you have the following installed:
 ## [Step 0: Create the Project](#step-0-create-the-project)
 
 <blockquote class="callout">
-<strong>Note</strong>: if you'd like to skip this step, you can simply download the <a href="https://github.com/connor/NPR-Starter" title="NPR starter project">starter project</a>.
+<strong>Note</strong>: if you'd like to skip this step, you can simply download the <a href="https://github.com/connor/npr/tree/tutorial_part01_starting_point" title="NPR starter project">starter project</a>.
 </blockquote>
 
 
@@ -57,7 +57,7 @@ Like I mentioned above, this won’t actually be using `SwiftUI`. Let’s remove
 * In **AppDelegate.swift**, you can remove everything in the `applicationDidFinishLaunching(_ aNotification: Notification)` method.
 	* You can also remove the **SwiftUI** import, and delete the other method stubs if you’re so inclined!
 
-This is what my **AppDelegate.swift** looks like (again, you can download the [starter project](https://github.com/connor/NPR-Starter) if you'd prefer):
+This is what my **AppDelegate.swift** looks like (again, you can download the [starter project](https://github.com/connor/npr/tree/tutorial_part01_starting_point) if you'd prefer):
 
 AppDelegate.swift
 {:.filename}
@@ -76,7 +76,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 ```
 
-Ok, **Build & Run** the project. You should have an empty App show up in your Dock.
+Ok, **Build & Run** the project. You should have an empty App show up in your Dock. Woohoo!
 
 [![](/assets/images/npr_dock.png)](/assets/images/npr_dock.png){:target="_blank"}
 
@@ -105,15 +105,17 @@ Looks like there is a `streamsV2` key with an `urls` array. Each `url` has an `h
         Your browser does not support the audio tag.
 </audio>
 
-voila! High five! 🖐🏻
+voilà! You should be able to play that stream right from your browser. High five! This is some progress.
 
 Be sure to note the URL of the audio stream somewhere; we’re going to be using that here shortly.
 
-Ok, so after doing some digging, we know how to _find_ stations. Lets see how we can actually _stream_ the station on a macOS app.
+Ok, so after doing some digging, we know how to _find_ stations. Lets see how we can actually _stream_ the station on a macOS app...
 
 #### [Streaming audio in Swift](#streaming-audio-in-swift)
 
 On iOS, macOS, watchOS & tvOS, there is a handy framework provided by Apple, `AVFoundation`, that allows you to play and create audiovisual media. We’re going to be using that.
+
+Basically, you have an instance of the `AVPlayer` class, and you give it an `AVPlayerItem`. That's it.
 
 AppDelegate.swift
 {:.filename}
@@ -153,7 +155,7 @@ Task <E0B567FC-415F-4169-94B1-47B3486118BA>.<1> finished with error [-1003] Erro
 ), NSLocalizedDescription=A server with the specified hostname could not be found., NSErrorFailingURLStringKey=https://kcurlive.umkc.edu/kcur893, NSErrorFailingURLKey=https://kcurlive.umkc.edu/kcur893, _kCFStreamErrorDomainKey=10}
 ```
 
-Well, I’m going to save you some Googling. **tl;dr** — macOS requires you to explicitly opt your app in to making and receiving network connections.
+**tl;dr** — macOS requires you to explicitly opt your app in to making and receiving network connections. Since this is streaming from a URL and not our local filesystem, we need to tell the app that making network requests is allowed.
 
 In the Xcode project editor, with your application target selected, view the `Signing & Capabilities` tab. From there, be sure to check **Outgoing Connections (Client)**.
 
@@ -176,7 +178,14 @@ You should now be hearing audio streamed from an NPR station. High five!
 
 ## [Step 2: Adding a menuBar UI](#step-2-adding-a-menubar-ui)
 
-It’s pretty simple to make a menuBar UI. Take the following code in `AppDelegate.swift` —
+It’s pretty simple to make a menuBar UI. For now, there are two main concepts —
+
+* `NSStatusBar` — an object that manages a collection of status items displayed within the system-wide menu bar.
+*  `NSStatusItem` — an individual element displayed in the system-wide `NSStatusBar`.
+
+So, a `StatusItem` belongs to a `StatusBar`. [StatusItem](https://developer.apple.com/documentation/appkit/nsstatusitem) objects have `buttons` that you can style with either images or text.
+
+Take the following code in `AppDelegate.swift` —
 
 AppDelegate.swift
 {:.filename}
@@ -216,7 +225,7 @@ As you can see, we:
 
 [![](/assets/images/npr_hello_world.png)](/assets/images/npr_hello_world.png){:target="_blank"}
 
-🖐🏻
+🖐🏻!
 
 #### [Toggling Play / Pause](#toggling-play--pause)
 
@@ -280,7 +289,7 @@ However, there are a few loose ends that I think we should tidy up before gettin
 
 1. An *empty* app launches in the Dock when the menubar app runs; we want it to only run in the menubar.
 2. The menubar title isn’t helpful.
-3. There’s no way to quit the app
+3. There’s no way to quit the app.
 
 Let’s fix both of those —
 
@@ -310,9 +319,9 @@ In the Xcode project, ensure the **Project Navigator** is being shown by going t
 
 In the Project Navigator, right-click **Assets.xcassets** and select `Show in Finder`. Simply drag the unzipped folders into that `Assets.xcassets` directory.
 
-Now that the assets are added to the project, we can go ahead and swap out that `Hello, world!` for… something a bit more helpful 😉
+Now that the assets are added to the project, we can go ahead and swap out that `Hello, world!` for... something a bit more helpful 😉
 
-In `AppDelegate.swift`, swap out the `Hello, world!` line with this:
+In `AppDelegate.swift`, replace the `Hello, world!` line with this:
 
 ```swift
 // Replace this line...
@@ -350,7 +359,7 @@ Just above the `togglePlayPause()` method, add this —
 }
 ```
 
-If you **Build & Run**, now you should see a `Quit` button below a separator! 
+If you **Build & Run**, now you should see a `Quit` button below a separator!
 
 [![](/assets/images/npr_menu_with_icon_play_pause.png)](/assets/images/npr_menu_with_icon_play_pause.png){:target="_blank"}
 
@@ -366,6 +375,16 @@ Now, we already know when the stream is set to playing or paused via the `toggle
 
 ```swift
 @objc func togglePlayPause() {
+    /***
+    NOTE: the commented section below should already be here.
+    if isCurrentlyPlaying {
+        player.pause()
+        isCurrentlyPlaying = false
+    } else {
+        player.play()
+        isCurrentlyPlaying = true
+    }
+    ***/
     updateMenuIcon()
 }
 
@@ -385,11 +404,11 @@ func applicationDidFinishLaunching(_ aNotification: Notification) {
 }
 ```
 
-**Build & Run** and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻
+**Build & Run** and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻!
 
 <picture><video muted poster="/assets/images/npr_menu_with_icon_play_pause.png" src="/assets/videos/npr-play-pause-icon.mov" controls=""></video></picture>
 
-Lastly, while we’re in this part of the codebase, let’s make the `Play / Pause` button title actually say what the action will be.
+Finally, while we’re in this part of the codebase, let’s make the `Play / Pause` button title actually say what the action will be.
 
 This will follow a very similar path from directly above, just with a few tweaks.
 
@@ -421,10 +440,12 @@ func updatePlayPauseButtonTitle() {
 
 Finally, in `applcationDidFinishLaunching`, just below the call to `updateMenuIcon()`, call `updatePlayPauseButtonTitle()`. Doing this will keep the button title and the menu icon in sync.
 
-**Build & Run** and we should have a `menuItem` that updates the title properly. Nice work so far!
+**Build & Run** and we should have a `menuItem` that updates the title properly.
 
 [![](/assets/images/npr_pause.png)](/assets/images/npr_pause.png){:target="_blank"}
 [![](/assets/images/npr_paused_progress.png)](/assets/images/npr_paused_progress.png){:target="_blank"}
+
+Nice work so far! We've got an app that works (as long you as hard-code the proper URL for the desired audio stream).
 
 ---
 
