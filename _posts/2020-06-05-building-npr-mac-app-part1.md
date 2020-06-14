@@ -454,6 +454,4 @@ In Part 2, we'll focus on adding a **Preferences** window, integrating keyboard 
 
 To see when Part 2 is ready, follow me on [Twitter](https://www.twitter.com/connor) or subscribe to this blog's [RSS](/feed.xml) feed.
 
----
-
 Please consider [donating](https://www.npr.org/donations/support) to NPR.
