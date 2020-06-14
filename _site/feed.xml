@@ -1,1 +1,445 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-14T11:13:46-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Connor Montgomery</title><subtitle>I'm a product-driven software engineer living in Kansas City. High five!</subtitle><author><name>Connor Montgomery</name></author></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-14T11:19:36-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Connor Montgomery</title><subtitle>I'm a product-driven software engineer living in Kansas City. High five!</subtitle><author><name>Connor Montgomery</name></author><entry><title type="html">Building the NPR macOS App, Part 1</title><link href="http://localhost:4000/blog/building-npr-mac-app-part1/" rel="alternate" type="text/html" title="Building the NPR macOS App, Part 1" /><published>2020-06-05T20:34:35-05:00</published><updated>2020-06-05T20:34:35-05:00</updated><id>http://localhost:4000/blog/building-npr-mac-app-part1</id><content type="html" xml:base="http://localhost:4000/blog/building-npr-mac-app-part1/">&lt;p&gt;I love NPR. Our family listens to &lt;a href=&quot;https://www.npr.org/podcasts/510318/up-first&quot;&gt;Up First&lt;/a&gt; every morning during breakfast &amp;amp; &lt;a href=&quot;https://www.kcur.org/&quot;&gt;KCUR&lt;/a&gt; every evening when we cook dinner. We’re proud contributors.&lt;/p&gt;
+
+&lt;p&gt;Last year, I built a simple &lt;a href=&quot;https://github.com/connor/npr&quot;&gt;macOS App&lt;/a&gt; that lets you stream your favorite NPR station from your menubar. We’re going to recreate that.&lt;/p&gt;
+
+&lt;h2 id=&quot;end-result&quot;&gt;&lt;a href=&quot;#end-result&quot;&gt;End Result&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;At the end of this 2-part series, we will have made a menubar macOS app to stream NPR audio streams. We’ll have “reverse-engineeered” the way to search for stations via zipcode and built a macOS menubar app with the following features:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;ability to livestream an NPR station&lt;/li&gt;
+  &lt;li&gt;integration with macOS media key shortcuts&lt;/li&gt;
+  &lt;li&gt;a standalone &lt;code class=&quot;highlighter-rouge&quot;&gt;Preferences&lt;/code&gt; window&lt;/li&gt;
+  &lt;li&gt;ability to change &amp;amp; save stations for future app launches.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This will all be done using &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_playing.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_playing.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;requirements&quot;&gt;&lt;a href=&quot;#requirements&quot;&gt;Requirements&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;I am going to assume you have the following installed:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes&quot;&gt;Xcode&lt;/a&gt; &amp;gt;= 10.2&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://swift.org/&quot;&gt;Swift&lt;/a&gt; &amp;gt;= 5.0&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://cocoapods.org/&quot;&gt;Cocoapods&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;step-0-create-the-project&quot;&gt;&lt;a href=&quot;#step-0-create-the-project&quot;&gt;Step 0: Create the Project&lt;/a&gt;&lt;/h2&gt;
+
+&lt;blockquote class=&quot;callout&quot;&gt;
+&lt;strong&gt;Note&lt;/strong&gt;: if you'd like to skip this step, you can simply download the &lt;a href=&quot;https://github.com/connor/npr/tree/tutorial_part01_starting_point&quot; title=&quot;NPR starter project&quot;&gt;starter project&lt;/a&gt;.
+&lt;/blockquote&gt;
+
+&lt;p&gt;First things first, let’s create the project.&lt;/p&gt;
+
+&lt;p&gt;In Xcode, go to &lt;code class=&quot;highlighter-rouge&quot;&gt;File → New → Project&lt;/code&gt;. You’ll see a dialog similar to below —&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_new_project.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_new_project.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Select the &lt;strong&gt;macOS&lt;/strong&gt; tab, and be sure that &lt;strong&gt;App&lt;/strong&gt; is selected.&lt;/p&gt;
+
+&lt;p&gt;In the next step, give the project a name (I chose &lt;em&gt;NPR&lt;/em&gt;) and be sure that it is a &lt;strong&gt;Swift&lt;/strong&gt; project. Even though we won’t be using SwiftUI, let’s set the project to use &lt;strong&gt;SwiftUI&lt;/strong&gt; for the User Interface. This will make it easier to start from a clean slate.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_new_project_swift_ui.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_new_project_swift_ui.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;remove-whats-unnecessary&quot;&gt;&lt;a href=&quot;#remove-whats-unnecessary&quot;&gt;Remove what’s unnecessary&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Like I mentioned above, this won’t actually be using &lt;code class=&quot;highlighter-rouge&quot;&gt;SwiftUI&lt;/code&gt;. Let’s remove some of the unnecessary code that was generated.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Delete the &lt;strong&gt;ContentView.swift&lt;/strong&gt; file.&lt;/li&gt;
+  &lt;li&gt;In &lt;strong&gt;AppDelegate.swift&lt;/strong&gt;, you can remove everything in the &lt;code class=&quot;highlighter-rouge&quot;&gt;applicationDidFinishLaunching(_ aNotification: Notification)&lt;/code&gt; method.
+    &lt;ul&gt;
+      &lt;li&gt;You can also remove the &lt;strong&gt;SwiftUI&lt;/strong&gt; import, and delete the other method stubs if you’re so inclined!&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This is what my &lt;strong&gt;AppDelegate.swift&lt;/strong&gt; looks like (again, you can download the &lt;a href=&quot;https://github.com/connor/npr/tree/tutorial_part01_starting_point&quot;&gt;starter project&lt;/a&gt; if you’d prefer):&lt;/p&gt;
+
+&lt;p class=&quot;filename&quot;&gt;AppDelegate.swift&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSWindow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ok, &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the project. You should have an empty App show up in your Dock. Woohoo!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_dock.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_dock.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step-1-stream-the-audio&quot;&gt;&lt;a href=&quot;#step-1-stream-the-audio&quot;&gt;Step 1: Stream the audio&lt;/a&gt;&lt;/h2&gt;
+
+&lt;h4 id=&quot;finding-the-audio-stream&quot;&gt;&lt;a href=&quot;#finding-the-audio-stream&quot;&gt;Finding the audio stream&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Before we build out any UI, let’s get an audio stream going.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, NPR has a way to &lt;a href=&quot;https://www.npr.org/stations/&quot;&gt;find a station&lt;/a&gt; via a city, state or zip code. If we pop open the &lt;strong&gt;Web Inspector&lt;/strong&gt; and go to the &lt;strong&gt;Network&lt;/strong&gt; tab, we’re able to see what HTTP requests the webpage is making. Let’s look to see if we can find out how it works…&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_webinspector_stations.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_webinspector_stations.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Bingo! Looks like the NPR page is hitting a &lt;code class=&quot;highlighter-rouge&quot;&gt;/stationfinder&lt;/code&gt; &lt;a href=&quot;https://www.npr.org/proxy/stationfinder/v3/stations?q=64114&quot;&gt;endpoint&lt;/a&gt;, and passing the input as a query string parameter.&lt;/p&gt;
+
+&lt;p&gt;If we look at the &lt;strong&gt;Preview&lt;/strong&gt; tab of that request, we can unpack the response a bit and further understand what’s happening under the hood.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_webinspector_stations_response.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_webinspector_stations_response.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Looks like there is a &lt;code class=&quot;highlighter-rouge&quot;&gt;streamsV2&lt;/code&gt; key with an &lt;code class=&quot;highlighter-rouge&quot;&gt;urls&lt;/code&gt; array. Each &lt;code class=&quot;highlighter-rouge&quot;&gt;url&lt;/code&gt; has an &lt;code class=&quot;highlighter-rouge&quot;&gt;href&lt;/code&gt; which looks like it points to an audio stream. Pop &lt;a href=&quot;https://kcurlive.umkc.edu/kcur893&quot;&gt;that&lt;/a&gt; into a new tab in your browser and…&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_kcur.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_kcur.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;audio controls=&quot;&quot;&gt;
+    &lt;source src=&quot;https://kcurlive.umkc.edu/kcur893&quot; type=&quot;audio/mpeg&quot; /&gt;
+        Your browser does not support the audio tag.
+&lt;/audio&gt;
+
+&lt;p&gt;voilà! You should be able to play that stream right from your browser. High five! This is some progress.&lt;/p&gt;
+
+&lt;p&gt;Be sure to note the URL of the audio stream somewhere; we’re going to be using that here shortly.&lt;/p&gt;
+
+&lt;p&gt;Ok, so after doing some digging, we know how to &lt;em&gt;find&lt;/em&gt; stations. Lets see how we can actually &lt;em&gt;stream&lt;/em&gt; the station on a macOS app…&lt;/p&gt;
+
+&lt;h4 id=&quot;streaming-audio-in-swift&quot;&gt;&lt;a href=&quot;#streaming-audio-in-swift&quot;&gt;Streaming audio in Swift&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;On iOS, macOS, watchOS &amp;amp; tvOS, there is a handy framework provided by Apple, &lt;code class=&quot;highlighter-rouge&quot;&gt;AVFoundation&lt;/code&gt;, that allows you to play and create audiovisual media. We’re going to be using that.&lt;/p&gt;
+
+&lt;p&gt;Basically, you have an instance of the &lt;code class=&quot;highlighter-rouge&quot;&gt;AVPlayer&lt;/code&gt; class, and you give it an &lt;code class=&quot;highlighter-rouge&quot;&gt;AVPlayerItem&lt;/code&gt;. That’s it.&lt;/p&gt;
+
+&lt;p class=&quot;filename&quot;&gt;AppDelegate.swift&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVFoundation&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSWindow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamURL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;URL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://kcurlive.umkc.edu/kcur893&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayerItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamURL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;replaceCurrentItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;play&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Pretty simple, right? We just create an instance of &lt;code class=&quot;highlighter-rouge&quot;&gt;AVPlayer&lt;/code&gt; and call &lt;code class=&quot;highlighter-rouge&quot;&gt;replaceCurrentItem&lt;/code&gt; with an &lt;code class=&quot;highlighter-rouge&quot;&gt;AVPlayerItem&lt;/code&gt; we created with the URL of the audio stream. Finally, we &lt;code class=&quot;highlighter-rouge&quot;&gt;play()&lt;/code&gt; the player.&lt;/p&gt;
+
+&lt;p&gt;Go ahead and &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the project…&lt;/p&gt;
+
+&lt;p&gt;…and nothing is happening.&lt;/p&gt;
+
+&lt;p&gt;I don’t know about you, but I was expecting that to work! It’s not a big deal; this trips me for almost every macOS app I write.&lt;/p&gt;
+
+&lt;p&gt;Pop open the &lt;code class=&quot;highlighter-rouge&quot;&gt;Debug&lt;/code&gt; area (&lt;code class=&quot;highlighter-rouge&quot;&gt;View → Debug Area → Show Debug Area&lt;/code&gt;) and check out what’s in there. You’re probably seeing something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;Task&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;E0B567FC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;415&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4169&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;B1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;B3486118BA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;.&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;finished&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Error&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSURLErrorDomain&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;A server with the specified hostname could not be found.&quot;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UserInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_kCFStreamErrorCodeKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;72000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSUnderlyingError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x600000c8e7c0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Error&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kCFErrorDomainCFNetwork&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;(null)&quot;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UserInfo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_kCFStreamErrorCodeKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;72000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_kCFStreamErrorDomainKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_NSURLErrorFailingURLSessionTaskErrorKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;LocalDataTask&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;E0B567FC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;415&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4169&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;B1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;B3486118BA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;.&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_NSURLErrorRelatedURLSessionTaskErrorKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;LocalDataTask &amp;lt;E0B567FC-415F-4169-94B1-47B3486118BA&amp;gt;.&amp;lt;1&amp;gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSLocalizedDescription&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;specified&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hostname&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;could&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;found&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSErrorFailingURLStringKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//kcurlive.umkc.edu/kcur893, NSErrorFailingURLKey=https://kcurlive.umkc.edu/kcur893, _kCFStreamErrorDomainKey=10}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt; — macOS requires you to explicitly opt your app in to making and receiving network connections. Since this is streaming from a URL and not our local filesystem, we need to tell the app that making network requests is allowed.&lt;/p&gt;
+
+&lt;p&gt;In the Xcode project editor, with your application target selected, view the &lt;code class=&quot;highlighter-rouge&quot;&gt;Signing &amp;amp; Capabilities&lt;/code&gt; tab. From there, be sure to check &lt;strong&gt;Outgoing Connections (Client)&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_outgoing_connections.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_outgoing_connections.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Now go ahead and &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the project.&lt;/p&gt;
+
+&lt;p&gt;Still nothing? Hmm. Oh!&lt;/p&gt;
+
+&lt;p&gt;We also have to tell Xcode that our app can make requests to &lt;em&gt;arbitrary&lt;/em&gt; servers.&lt;/p&gt;
+
+&lt;p&gt;In your &lt;code class=&quot;highlighter-rouge&quot;&gt;Info.plist&lt;/code&gt; file, add a new key, &lt;code class=&quot;highlighter-rouge&quot;&gt;App Transport Security Settings&lt;/code&gt; of type &lt;code class=&quot;highlighter-rouge&quot;&gt;Dictionary&lt;/code&gt;. Underneath that, add a key, &lt;code class=&quot;highlighter-rouge&quot;&gt;Allow Arbitrary Loads&lt;/code&gt; and set the value of that to &lt;code class=&quot;highlighter-rouge&quot;&gt;YES&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_app_transport.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_app_transport.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;One more time, let’s &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the project.&lt;/p&gt;
+
+&lt;p&gt;You should now be hearing audio streamed from an NPR station. High five!&lt;/p&gt;
+
+&lt;h2 id=&quot;step-2-adding-a-menubar-ui&quot;&gt;&lt;a href=&quot;#step-2-adding-a-menubar-ui&quot;&gt;Step 2: Adding a menuBar UI&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;It’s pretty simple to make a menuBar UI. For now, there are two main concepts —&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt; — an object that manages a collection of status items displayed within the system-wide menu bar.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusItem&lt;/code&gt; — an individual element displayed in the system-wide &lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So, a &lt;code class=&quot;highlighter-rouge&quot;&gt;StatusItem&lt;/code&gt; belongs to a &lt;code class=&quot;highlighter-rouge&quot;&gt;StatusBar&lt;/code&gt;. &lt;a href=&quot;https://developer.apple.com/documentation/appkit/nsstatusitem&quot;&gt;StatusItem&lt;/a&gt; objects have &lt;code class=&quot;highlighter-rouge&quot;&gt;buttons&lt;/code&gt; that you can style with either images or text.&lt;/p&gt;
+
+&lt;p&gt;Take the following code in &lt;code class=&quot;highlighter-rouge&quot;&gt;AppDelegate.swift&lt;/code&gt; —&lt;/p&gt;
+
+&lt;p class=&quot;filename&quot;&gt;AppDelegate.swift&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVFoundation&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSWindow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;statusBar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSStatusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSStatusItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamURL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;URL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://kcurlive.umkc.edu/kcur893&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayerItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamURL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;replaceCurrentItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;play&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;statusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;statusItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;withLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, world!&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, we:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;keep a reference to the system &lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;keep a reference to a &lt;code class=&quot;highlighter-rouge&quot;&gt;statusBarItem&lt;/code&gt;, which we initialize from the global &lt;code class=&quot;highlighter-rouge&quot;&gt;statusBar&lt;/code&gt; reference with a &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt; length
+    &lt;ul&gt;
+      &lt;li&gt;note: the &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt; &lt;a href=&quot;https://developer.apple.com/documentation/appkit/nsstatusbar/status_bar_item_length&quot;&gt;length&lt;/a&gt; essentially means “variable length”. Meaning, the length dynamically adjusts to the contents.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;we set the &lt;code class=&quot;highlighter-rouge&quot;&gt;title&lt;/code&gt; of the &lt;code class=&quot;highlighter-rouge&quot;&gt;button&lt;/code&gt; on the &lt;code class=&quot;highlighter-rouge&quot;&gt;statusItem&lt;/code&gt; to be a string (in this case, “Hello, world!”).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the project, and you should see a &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello, world!&lt;/code&gt; in your menu bar!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_hello_world.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_hello_world.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;🖐🏻!&lt;/p&gt;
+
+&lt;h4 id=&quot;toggling-play--pause&quot;&gt;&lt;a href=&quot;#toggling-play--pause&quot;&gt;Toggling Play / Pause&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Next up, we’ll add a little menu attached to the &lt;code class=&quot;highlighter-rouge&quot;&gt;statusItem&lt;/code&gt; from above. Again, this is pretty simple —&lt;/p&gt;
+
+&lt;p class=&quot;filename&quot;&gt;AppDelegate.swift&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVFoundation&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSWindow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;statusBar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSStatusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSStatusItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamURL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;URL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://kcurlive.umkc.edu/kcur893&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;streamItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AVPlayerItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamURL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;replaceCurrentItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streamItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;play&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;statusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;statusItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;withLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, world!&quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Play / Pause&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;#selector(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;@objc&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pause&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;player&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;play&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, when clicking the &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello World&lt;/code&gt; statusBarItem, we’ll se a Menu dropdown show, with a  &lt;code class=&quot;highlighter-rouge&quot;&gt;Play / Pause&lt;/code&gt; button. Go ahead, click it! It should toggle the audio stream to be, well, played or paused.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_hello_world_play_pause.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_hello_world_play_pause.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;tidying-things-up&quot;&gt;&lt;a href=&quot;#tidying-things-up&quot;&gt;Tidying things up&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;This is working! That’s exciting. Nice job!&lt;/p&gt;
+
+&lt;p&gt;However, there are a few loose ends that I think we should tidy up before getting too far. Notably —&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;An &lt;em&gt;empty&lt;/em&gt; app launches in the Dock when the menubar app runs; we want it to only run in the menubar.&lt;/li&gt;
+  &lt;li&gt;The menubar title isn’t helpful.&lt;/li&gt;
+  &lt;li&gt;There’s no way to quit the app.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let’s fix both of those —&lt;/p&gt;
+
+&lt;h4 id=&quot;only-showing-in-the-menubar&quot;&gt;&lt;a href=&quot;#only-showing-in-the-menubar&quot;&gt;Only showing in the menubar&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;This is a fairly common use case on macOS, so after some quick googling I found the &lt;a href=&quot;https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html&quot;&gt;answer&lt;/a&gt;. Basically, we need to tell the OS, in our &lt;code class=&quot;highlighter-rouge&quot;&gt;Info.plist&lt;/code&gt; file, that our app is an &lt;code class=&quot;highlighter-rouge&quot;&gt;agent&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_lsuiagent.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_lsuiagent.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To do that, open the &lt;code class=&quot;highlighter-rouge&quot;&gt;Info.plist&lt;/code&gt; file and add a new entry —&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Application is agent (UIElement)&lt;/code&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;YES&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It should now look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_info_plist.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_info_plist.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; now, you’ll see that the app no longer shows an icon in the Dock and doesn’t show up in the &lt;code class=&quot;highlighter-rouge&quot;&gt;⌘ + Tab&lt;/code&gt; app switcher.&lt;/p&gt;
+
+&lt;h4 id=&quot;making-the-menubar-more-helpful&quot;&gt;&lt;a href=&quot;#making-the-menubar-more-helpful&quot;&gt;Making the menubar more helpful&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Right now, our menubar button title says &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello, world!&lt;/code&gt;. Let’s make it the NPR logo.&lt;/p&gt;
+
+&lt;p&gt;First, &lt;strong&gt;&lt;a href=&quot;/downloads/npr-macos/icons.zip&quot;&gt;download&lt;/a&gt;&lt;/strong&gt; the icons. Go ahead and unzip that file.&lt;/p&gt;
+
+&lt;p&gt;In the Xcode project, ensure the &lt;strong&gt;Project Navigator&lt;/strong&gt; is being shown by going to &lt;code class=&quot;highlighter-rouge&quot;&gt;View → Navigators → Show Project Navigator&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the Project Navigator, right-click &lt;strong&gt;Assets.xcassets&lt;/strong&gt; and select &lt;code class=&quot;highlighter-rouge&quot;&gt;Show in Finder&lt;/code&gt;. Simply drag the unzipped folders into that &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets.xcassets&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;Now that the assets are added to the project, we can go ahead and swap out that &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello, world!&lt;/code&gt; for… something a bit more helpful 😉&lt;/p&gt;
+
+&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;AppDelegate.swift&lt;/code&gt;, replace the &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello, world!&lt;/code&gt; line with this:&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Replace this line...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello, world!&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// With this line...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSImage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;named&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;npr-icon&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; the app and you should see the NPR icon in the menubar!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_menu_with_icon.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_menu_with_icon.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;We’re making fantastic progress. This is starting to feel like a real app!&lt;/p&gt;
+
+&lt;h4 id=&quot;adding-the-ability-to-quit-the-app&quot;&gt;&lt;a href=&quot;#adding-the-ability-to-quit-the-app&quot;&gt;Adding the ability to Quit the app&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Since we’ve been rebuilding the app all along, it has Quit itself for us. However, if/once we start distributing it, we’d need a way to actually Quit it. Fortunately, that’s trivial to add.&lt;/p&gt;
+
+&lt;p&gt;Back in &lt;code class=&quot;highlighter-rouge&quot;&gt;AppDelegate.swift&lt;/code&gt;, after where the &lt;code class=&quot;highlighter-rouge&quot;&gt;Play / Pause&lt;/code&gt; button is added, add a separator and a new button for &lt;code class=&quot;highlighter-rouge&quot;&gt;Quit&lt;/code&gt; —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Play / Pause&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;#selector(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// NOTE: this should already be there&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;separator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Quit&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;#selector(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;quit&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;q&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, if you try to &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt;, Xcode will fail because we haven’t defined a &lt;code class=&quot;highlighter-rouge&quot;&gt;quit&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;Just above the &lt;code class=&quot;highlighter-rouge&quot;&gt;togglePlayPause()&lt;/code&gt; method, add this —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;@objc&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;quit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;NSApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;terminate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you &lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt;, now you should see a &lt;code class=&quot;highlighter-rouge&quot;&gt;Quit&lt;/code&gt; button below a separator!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_menu_with_icon_play_pause.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_menu_with_icon_play_pause.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You should also notice that there is a keyboard shortcut, &lt;code class=&quot;highlighter-rouge&quot;&gt;⌘Q&lt;/code&gt;, automatically assigned to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Quit&lt;/code&gt; button. We got that functionality for free via the &lt;code class=&quot;highlighter-rouge&quot;&gt;keyEquivalent&lt;/code&gt; parameter for the &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem.init&lt;/code&gt;. If the menu is open and we fire that keyboard shortcut, the menu highlights that item for us, like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_menu_with_icon_play_pause_quit.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_menu_with_icon_play_pause_quit.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;one-more-piece-of-polish&quot;&gt;&lt;a href=&quot;one-more-piece-of-polish&quot;&gt;One more piece of polish&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;After using the app, it sure would be nice to have a visual indicator of the Play or Pause state. Why don’t we use the &lt;code class=&quot;highlighter-rouge&quot;&gt;greyscale&lt;/code&gt; asset above as the menu icon for when the app is paused and the &lt;code class=&quot;highlighter-rouge&quot;&gt;colored&lt;/code&gt; asset for when the stream is playing? That seems pretty elegant.&lt;/p&gt;
+
+&lt;p&gt;Now, we already know when the stream is set to playing or paused via the &lt;code class=&quot;highlighter-rouge&quot;&gt;togglePlayPause&lt;/code&gt; method, we should be able to just have an &lt;code class=&quot;highlighter-rouge&quot;&gt;updateMenuIcon&lt;/code&gt; method that updates itself when the stream is toggled. Let’s try that —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;@objc&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/***
+    NOTE: the commented section below should already be here.
+    if isCurrentlyPlaying {
+        player.pause()
+        isCurrentlyPlaying = false
+    } else {
+        player.play()
+        isCurrentlyPlaying = true
+    }
+    ***/&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;updateMenuIcon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;updateMenuIcon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Void&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;imageName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;npr-icon&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;npr-icon-greyscale&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSImage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;named&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;imageName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We should also update the &lt;code class=&quot;highlighter-rouge&quot;&gt;applicationDidFinishLaunching&lt;/code&gt; method to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;updateMenuIcon()&lt;/code&gt; method instead of setting the statusBarItem’s image directly —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;statusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;statusItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;withLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;statusBarItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;updateMenuIcon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// NOTE: this is added&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻!&lt;/p&gt;
+
+&lt;picture&gt;&lt;video muted=&quot;&quot; poster=&quot;/assets/images/npr_menu_with_icon_play_pause.png&quot; src=&quot;/assets/videos/npr-play-pause-icon.mov&quot; controls=&quot;&quot;&gt;&lt;/video&gt;&lt;/picture&gt;
+
+&lt;p&gt;Finally, while we’re in this part of the codebase, let’s make the &lt;code class=&quot;highlighter-rouge&quot;&gt;Play / Pause&lt;/code&gt; button title actually say what the action will be.&lt;/p&gt;
+
+&lt;p&gt;This will follow a very similar path from directly above, just with a few tweaks.&lt;/p&gt;
+
+&lt;p&gt;First of all, we’ll need to keep a reference to the &lt;code class=&quot;highlighter-rouge&quot;&gt;playPauseButton&lt;/code&gt;. Let’s add a property to keep track of it —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;playPauseIcon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Pause&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;#selector(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, let’s add that instance of the button to the menu —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Replace this line...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Play / Pause&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;#selector(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;togglePlayPause&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// with this line...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;playPauseIcon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, in the &lt;code class=&quot;highlighter-rouge&quot;&gt;togglePlayPause()&lt;/code&gt; method, let’s call &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePlayPauseButtonTitle()&lt;/code&gt; right after &lt;code class=&quot;highlighter-rouge&quot;&gt;updateMenuIcon()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can define the &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePlayPauseButtonTitle()&lt;/code&gt; method right below the &lt;code class=&quot;highlighter-rouge&quot;&gt;updateMenuIcon()&lt;/code&gt; method —&lt;/p&gt;
+
+&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;updatePlayPauseButtonTitle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;playPauseIcon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isCurrentlyPlaying&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Pause&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Play&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, in &lt;code class=&quot;highlighter-rouge&quot;&gt;applcationDidFinishLaunching&lt;/code&gt;, just below the call to &lt;code class=&quot;highlighter-rouge&quot;&gt;updateMenuIcon()&lt;/code&gt;, call &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePlayPauseButtonTitle()&lt;/code&gt;. Doing this will keep the button title and the menu icon in sync.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Build &amp;amp; Run&lt;/strong&gt; and we should have a &lt;code class=&quot;highlighter-rouge&quot;&gt;menuItem&lt;/code&gt; that updates the title properly.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/npr_pause.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_pause.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+&lt;a href=&quot;/assets/images/npr_paused_progress.png&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/npr_paused_progress.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice work so far! We’ve got an app that works (as long you as hard-code the proper URL for the desired audio stream).&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;This is a good stopping point for Part 1. Thanks so much for following along! I really appreciate your time.&lt;/p&gt;
+
+&lt;p&gt;In Part 2, we’ll focus on adding a &lt;strong&gt;Preferences&lt;/strong&gt; window, integrating keyboard shortcuts &amp;amp; adding some more functionality to the dropdown menu.&lt;/p&gt;
+
+&lt;p&gt;To see when Part 2 is ready, follow me on &lt;a href=&quot;https://www.twitter.com/connor&quot;&gt;Twitter&lt;/a&gt; or subscribe to this blog’s &lt;a href=&quot;/feed.xml&quot;&gt;RSS&lt;/a&gt; feed.&lt;/p&gt;</content><author><name>Connor Montgomery</name></author><summary type="html">Part 1 of a 2-part tutorial series. We walk through building the NPR macOS app together.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/npr_playing.png" /><media:content medium="image" url="http://localhost:4000/assets/images/npr_playing.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
