@@ -26,6 +26,8 @@ description: >-
 url: "https://connor.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 image: /social_avatar.jpg
 google_analytics: UA-169330673-1
+exclude:
+  - README.md
 twitter:
   username: connor
   card: summary

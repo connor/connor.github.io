@@ -1,5 +1,6 @@
 ---
 layout: home
+title: null
 ---
 
 # Hey there, I'm Connor.
