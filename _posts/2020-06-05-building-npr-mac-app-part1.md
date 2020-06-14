@@ -5,7 +5,8 @@ date:   2020-06-05 20:34:35 -0500
 categories: mac, swift, tutorial
 excerpt: >-
     Part 1 of a 2-part tutorial series. We walk through building the <a href="https://npr.org" target="_blank">NPR</a> macOS app together.
-image: /assets/images/npr_playing.png
+image:
+    path: /assets/images/npr_playing.png
 draft: true
 ---
 
