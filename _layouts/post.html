@@ -1,0 +1,31 @@
+---
+layout: default
+---
+<article itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="">
+    <p>
+      <a href="/">&larr; home</a> <!-- <span class="silver">/</span>
+      <a href="/blog">blog</a> -->
+    </p>
+    <h1 class="f2 lh-solid mv5" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="silver">
+      <time class="" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%B %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="" itemprop="name">{{ page.author }}</span></span>
+      {%- endif -%}</p>
+  </header>
+
+  <div class="" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  {%- unless page.hide_edit_link -%}
+    <p>If you found an issue or room for improvement, please <a href="https{{site.github.repository_url}}{{ site.github.repository_url }}/tree/master/{{ page.relative_path }}" target="_blank">let me know</a>.</p>
+  {% endunless %}
+
+  <a class="" href="{{ page.url | relative_url }}" hidden></a>
+</article>

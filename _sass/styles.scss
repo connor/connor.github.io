@@ -1,0 +1,107 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  letter-spacing: -1px;
+  margin-bottom: 0;
+
+  mark {
+    position: relative;
+    z-index: -1;
+  }
+}
+
+hr {
+  border: none;
+  background: #eee;
+  height: 1px;
+  margin: 30px 0;
+}
+
+video {
+  width: 100%;
+}
+
+ul, ol {
+  padding: 0;
+  margin-left: 18px;
+
+  .task-list-item-checkbox {
+    margin-right: 8px;;
+  }
+}
+
+.task-list {
+  list-style-type: none;
+}
+
+.callout {
+  background: #ffffd1;
+  padding: 16px 24px;
+  margin: 0;
+  border-radius: 8px;
+  border: 1px solid #f3f373;
+}
+
+a, a:visited { 
+  color: #0047FF;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  a,
+  a:visited,
+  a:active {
+    color: black;
+    text-decoration: none;;
+  }
+  .filename {
+    background: #3c3c3c;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-white { background: #333; }
+  .black {color: #eee;}
+
+  img { opacity: 0.75; }
+  img:hover { opacity: 1.0; }
+
+  a, a:visited {
+    color: #f77594;;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    a,
+    a:visited,
+    a:active {
+      color: #f77594;
+    }
+  }
+
+  .callout { // duped in _syntax-highlighting.scss
+    background: #222;
+    border-color: #222;
+  }
+
+}
+
+// Import partials.
+@import
+  "minima/syntax-highlighting"
+;

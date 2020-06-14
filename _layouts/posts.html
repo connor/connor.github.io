@@ -1,0 +1,40 @@
+---
+layout: default
+---
+
+<div>
+  <p>
+    <a href="/">&larr; home</a>
+  </p>
+  {%- if page.title -%}
+    <h1 class="f2 lh-solid mv5">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  {%- if site.posts.size > 0 -%}
+    <div>
+      {%- for post in site.posts -%}
+        {% unless post.draft %}
+          {%- assign date_format = site.minima.date_format | default: "%B %-d, %Y" -%}
+          <p class="silver mv0">{{ post.date | date: date_format }}</p>
+          <h3 class="ma0">
+            <a class="post-link" href="{{ post.url | relative_url }}">
+              {{ post.title | escape }}
+            </a>
+          </h3>
+          {% if post.excerpt %}
+            <p class="mv0">
+              {{ post.excerpt }}
+            </p>
+            <p class="mv0">
+              <a href="{{ post.url | relative_url }}">Read &rarr;</a>
+            </p>
+          {% endif %}
+        {% endunless %}
+      {%- endfor -%}
+    </div>
+    <p class="rss-subscribe mt5"><a href="{{ "/feed.xml" | relative_url }}">RSS</a></p>
+  {%- endif -%}
+
+</div>
