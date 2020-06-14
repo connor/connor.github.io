@@ -197,7 +197,7 @@ import AVFoundation
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
-    let player:AVPlayer = AVPlayer.init()
+    let player = AVPlayer()
 
     let statusBar = NSStatusBar.system
     var statusBarItem:NSStatusItem!
@@ -241,7 +241,7 @@ import AVFoundation
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
-    let player:AVPlayer = AVPlayer.init()
+    let player = AVPlayer()
 
     let statusBar = NSStatusBar.system
     var statusBarItem:NSStatusItem!
@@ -454,4 +454,4 @@ In Part 2, we'll focus on adding a **Preferences** window, integrating keyboard 
 
 To see when Part 2 is ready, follow me on [Twitter](https://www.twitter.com/connor) or subscribe to this blog's [RSS](/feed.xml) feed.
 
-Please consider [donating](https://www.npr.org/donations/support) to NPR.
+In the meantime, I hope you consider [donating](https://www.npr.org/donations/support) to NPR.
