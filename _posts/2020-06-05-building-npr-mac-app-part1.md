@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Building the NPR macOS App, Part 1 
-date:   2020-06-05 20:34:35 -0500
+date:   2020-06-15
 categories: macOS, swift, tutorial
 excerpt: >-
     Part 1 of a 2-part tutorial series. We walk through building the <a href="https://npr.org" target="_blank">NPR</a> macOS app together.
