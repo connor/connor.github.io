@@ -28,6 +28,7 @@ image: /social_avatar.jpg
 google_analytics: UA-169330673-1
 exclude:
   - README.md
+  - CNAME
 twitter:
   username: connor
   card: summary
