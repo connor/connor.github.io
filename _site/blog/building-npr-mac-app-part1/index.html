@@ -401,7 +401,7 @@
 
 <p>Back in <code class="highlighter-rouge">AppDelegate.swift</code>, after where the <code class="highlighter-rouge">Play / Pause</code> button is added, add a separator and a new button for <code class="highlighter-rouge">Quit</code> —</p>
 
-<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">menu</span><span class="o">.</span><span class="nf">addItem</span><span class="p">(</span><span class="kt">NSMenuItem</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">title</span><span class="p">:</span> <span class="s">"Play / Pause"</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">togglePlayPause</span><span class="kd">)</span><span class="p">,</span> <span class="nv">keyEquivalent</span><span class="p">:</span> <span class="s">""</span><span class="p">))</span> <span class="c1">// NOTE: this should already be there</span>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">menu</span><span class="o">.</span><span class="nf">addItem</span><span class="p">(</span><span class="kt">NSMenuItem</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">title</span><span class="p">:</span> <span class="s">"Play / Pause"</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">togglePlayPause</span><span class="kd">)</span><span class="p">,</span> <span class="nv">keyEquivalent</span><span class="p">:</span> <span class="s">""</span><span class="p">))</span>
 <span class="n">menu</span><span class="o">.</span><span class="nf">addItem</span><span class="p">(</span><span class="kt">NSMenuItem</span><span class="o">.</span><span class="nf">separator</span><span class="p">())</span>
 <span class="n">menu</span><span class="o">.</span><span class="nf">addItem</span><span class="p">(</span><span class="kt">NSMenuItem</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">title</span><span class="p">:</span> <span class="s">"Quit"</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">quit</span><span class="kd">)</span><span class="p">,</span> <span class="nv">keyEquivalent</span><span class="p">:</span> <span class="s">"q"</span><span class="p">))</span>
 </code></pre></div></div>
@@ -430,16 +430,7 @@
 <p>Now, we already know when the stream is set to playing or paused via the <code class="highlighter-rouge">togglePlayPause</code> method, we should be able to just have an <code class="highlighter-rouge">updateMenuIcon</code> method that updates itself when the stream is toggled. Let’s try that —</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@objc</span> <span class="kd">func</span> <span class="nf">togglePlayPause</span><span class="p">()</span> <span class="p">{</span>
-    <span class="cm">/***
-    NOTE: the commented section below should already be here.
-    if isCurrentlyPlaying {
-        player.pause()
-        isCurrentlyPlaying = false
-    } else {
-        player.play()
-        isCurrentlyPlaying = true
-    }
-    ***/</span>
+    <span class="c1">// ...</span>
     <span class="nf">updateMenuIcon</span><span class="p">()</span>
 <span class="p">}</span>
 
@@ -452,15 +443,14 @@
 <p>We should also update the <code class="highlighter-rouge">applicationDidFinishLaunching</code> method to use the <code class="highlighter-rouge">updateMenuIcon()</code> method instead of setting the statusBarItem’s image directly —</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationDidFinishLaunching</span><span class="p">(</span><span class="n">_</span> <span class="nv">aNotification</span><span class="p">:</span> <span class="kt">Notification</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">statusBarItem</span> <span class="o">=</span> <span class="n">statusBar</span><span class="o">.</span><span class="nf">statusItem</span><span class="p">(</span><span class="nv">withLength</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">statusBarItem</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">menu</span>
+    <span class="c1">// ...</span>
     <span class="nf">updateMenuIcon</span><span class="p">()</span> <span class="c1">// NOTE: this is added</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
 <p><strong>Build &amp; Run</strong> and toggle pausing and playing the stream. If you’re seeing the icon flip from greyscale to colored, woohoo! That’s what we’re expecting. 🖐🏻!</p>
 
-<picture><video muted="" poster="/assets/images/npr_menu_with_icon_play_pause.png" src="/assets/videos/npr-play-pause-icon.mov" controls=""></video></picture>
+<picture><video muted="" poster="/assets/images/npr-play-pause-icon-video-poster.png" src="/assets/videos/npr-play-pause-icon.mov" controls=""></video></picture>
 
 <p>Finally, while we’re in this part of the codebase, let’s make the <code class="highlighter-rouge">Play / Pause</code> button title actually say what the action will be.</p>
 
@@ -500,9 +490,9 @@
 
 <hr />
 
-<p>This is a good stopping point for Part 1. Thanks so much for following along! I really appreciate your time.</p>
+<p>This is a good stopping point for Part 1. If you’d like to download the code for where we’re at, <a href="https://github.com/connor/npr/tree/tutorial_part01_ending_point">here</a> you go.</p>
 
-<p>In Part 2, we’ll focus on adding a <strong>Preferences</strong> window, integrating keyboard shortcuts &amp; adding some more functionality to the dropdown menu.</p>
+<p>In <strong>Part 2</strong>, we’ll focus on adding a Preferences window with the ability to change stations, integrating media key shortcuts &amp; adding some more functionality to the dropdown menu.</p>
 
 <p>To see when Part 2 is ready, follow me on <a href="https://www.twitter.com/connor">Twitter</a> or subscribe to this blog’s <a href="/feed.xml">RSS</a> feed.</p>
 
