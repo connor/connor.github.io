@@ -106,6 +106,11 @@ Looks like there is a `streamsV2` key with an `urls` array. Each `url` has an `h
 
 voilà! You should be able to play that stream right from your browser. High five! This is some progress.
 
+<blockquote class="callout">
+<strong>Note</strong>: I recently learned that the <a href="https://dev.npr.org/">NPR One Developer Center</a> documents a <a href="https://dev.npr.org/api/?urls.primaryName=station">Station Finder Service</a>. If you were building a mass-distributed app, that would be the method you should use. Thanks, <a href="http://twitter.com/jparise">Jon</a>!
+</blockquote>
+
+
 Be sure to note the URL of the audio stream somewhere; we’re going to be using that here shortly.
 
 Ok, so after doing some digging, we know how to _find_ stations. Lets see how we can actually _stream_ the station on a macOS app...
