@@ -30,7 +30,6 @@ exclude:
   - CNAME
 twitter:
   username: connor
-  card: summary
 social:
   name: Connor Montgomery
   links:
