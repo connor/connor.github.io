@@ -1,6 +1,7 @@
 ---
 layout: home
 title: null
+image: /social_avatar.jpg
 ---
 
 # Hey there, I'm Connor.

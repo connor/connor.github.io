@@ -23,9 +23,11 @@ layout: default
     {{ content }}
   </div>
 
+  {% comment %}
   {%- unless page.hide_edit_link -%}
     <p>If you found an issue or room for improvement, please <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path }}" target="_blank">let me know</a>.</p>
   {% endunless %}
+  {% endcomment %}
 
   <a class="" href="{{ page.url | relative_url }}" hidden></a>
 </article>
