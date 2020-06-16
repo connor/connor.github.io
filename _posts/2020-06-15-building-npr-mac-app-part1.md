@@ -5,7 +5,7 @@ categories: macOS, swift, tutorial
 excerpt: >-
     Part 1 of a 2-part tutorial series. We walk through building the <a href="https://npr.org" target="_blank">NPR</a> macOS app together.
 image:
-    path: /assets/images/npr_playing-header.png.png
+    path: /assets/images/npr_playing-header.png
 ---
 
 I love NPR. Our family listens to [Up First](https://www.npr.org/podcasts/510318/up-first) every morning during breakfast & [KCUR](https://www.kcur.org/) every evening when we cook dinner. We’re proud contributors.
