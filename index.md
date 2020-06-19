@@ -16,7 +16,7 @@ Prior to withdrawing from school to join Pinterest, I was the first employee at 
 
 I live in Kansas City with my [wife](https://linkedin.com/in/makressin/) & our [son](https://twitter.com/Connor/status/1161355210884812801). These days, watching after him is my primary [focus](https://twitter.com/Connor/status/1262745491936178184).
 
-I'm active on [Twitter](https://twitter.com/connor), [GitHub](https://github.com/connor) & [Pinterest](https://pinterest.com/cnnr/). Or you can just send me a [note](mailto:c@cnnr.me?subject="Hello!").
+I'm active on [Twitter](https://twitter.com/connor), [GitHub](https://github.com/connor) & [Pinterest](https://pinterest.com/cnnr/). Or you can just send me a [note](mailto:c@cnnr.me?subject=Hello!).
 
 High five 🖐🏻
 
