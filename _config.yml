@@ -24,13 +24,12 @@ email: c@cnnr.me
 description: >- 
   I'm a product-driven software engineer living in Kansas City. High five!
 url: "https://connor.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-image: /social_avatar.jpg
 google_analytics: UA-169330673-1
 exclude:
   - README.md
+  - CNAME
 twitter:
   username: connor
-  card: summary
 social:
   name: Connor Montgomery
   links:
