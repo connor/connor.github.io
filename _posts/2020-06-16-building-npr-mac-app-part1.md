@@ -13,7 +13,7 @@ I love NPR. Our family listens to [Up First](https://www.npr.org/podcasts/510318
 Last year, I built a simple [macOS App](https://github.com/connor/npr) that lets you stream your favorite NPR station from your menubar. We’re going to recreate that.
 
 ## [End Result](#end-result)
-At the end of this 2-part series, we will have made a menubar macOS app to stream NPR audio streams. We'll have "reverse-engineeered" the way to search for stations via zipcode and built a macOS menubar app with the following features:
+At the end of this 2-part series, we will have made a menubar macOS app to stream NPR stations. We'll have "reverse-engineeered" the way to search for stations via zipcode and built a macOS menubar app with the following features:
 * ability to livestream an NPR station
 * integration with macOS media key shortcuts
 * a standalone `Preferences` window
