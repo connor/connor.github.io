@@ -294,7 +294,7 @@ However, there are a few loose ends that I think we should tidy up before gettin
 2. The menubar title isn’t helpful.
 3. There’s no way to quit the app.
 
-Let’s fix both of those —
+Let’s fix those up —
 
 #### [Only showing in the menubar](#only-showing-in-the-menubar)
 
