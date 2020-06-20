@@ -393,7 +393,7 @@ We should also update the `applicationDidFinishLaunching` method to use the `upd
 ```swift
 func applicationDidFinishLaunching(_ aNotification: Notification) {
     // ...
-    updateMenuIcon() // NOTE: this is added
+    updateMenuIcon()
 }
 ```
 
