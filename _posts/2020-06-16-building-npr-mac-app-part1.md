@@ -408,7 +408,7 @@ This will follow a very similar path from directly above, just with a few tweaks
 First of all, we’ll need to keep a reference to the `playPauseButton`. Let’s add a property to keep track of it —
 
 ```swift
-let playPauseIcon = NSMenuItem.init(title: "Pause", action: #selector(togglePlayPause), keyEquivalent: "")
+let playPauseButton = NSMenuItem.init(title: "Pause", action: #selector(togglePlayPause), keyEquivalent: "")
 ```
 
 Next, let’s add that instance of the button to the menu —
@@ -418,7 +418,7 @@ Next, let’s add that instance of the button to the menu —
 menu.addItem(NSMenuItem.init(title: "Play / Pause", action: #selector(togglePlayPause), keyEquivalent: ""))
 
 // with this line...
-menu.addItem(playPauseIcon)
+menu.addItem(playPauseButton)
 ```
 
 Next, in the `togglePlayPause()` method, let’s call `updatePlayPauseButtonTitle()` right after `updateMenuIcon()`.
@@ -427,7 +427,7 @@ We can define the `updatePlayPauseButtonTitle()` method right below the `updateM
 
 ```swift
 func updatePlayPauseButtonTitle() {
-    playPauseIcon.title = isCurrentlyPlaying ? "Pause" : "Play"
+    playPauseButton.title = isCurrentlyPlaying ? "Pause" : "Play"
 }
 ```
 
