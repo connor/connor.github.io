@@ -1,8 +1,8 @@
 ---
-layout: default
 title: Projects
-permalink: /projects/
+permalink: "/projects/"
 published: false
+layout: default
 ---
 
 <div>

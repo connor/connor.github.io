@@ -1,8 +1,8 @@
 ---
-layout: page
 title: About
-permalink: /about/
+permalink: "/about/"
 published: false
+layout: page
 ---
 
 Hi, hey, hello!

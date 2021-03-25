@@ -1,6 +1,6 @@
 ---
-layout: default
 title: NPR for macOS
+layout: default
 platforms: macOS
 ---
 

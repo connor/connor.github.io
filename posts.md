@@ -1,6 +1,7 @@
 ---
-layout: posts
 title: Blog
-permalink: /blog/
+permalink: "/blog/"
 published: false
+layout: posts
 ---
+
