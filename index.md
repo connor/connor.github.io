@@ -10,7 +10,7 @@ I'm an overly optimistic product <strike class="silver">engineer</strike> <strik
 
 These days, I'm working with a wonderful team at [The Browser Company](https://thebrowser.company). We're building a better way to use the internet.
 
-Previously, I worked at [Pinterest](https://www.pinterest.com/cnnr/) for a _wonderful_ 7&frac12; years.
+Previously, I was at [Pinterest](https://www.pinterest.com/cnnr/) for a _remarkable_ 7&frac12; years.
 
 During my time there, I helped rewrite the Web & iOS applications from scratch, shipped countless features to hundreds of millions of Pinners, was the first engineer in the New York City office, managed teams & led strategic cross-company R&D efforts (among other things).
 
