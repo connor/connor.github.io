@@ -16,8 +16,8 @@ During my time there, I helped rewrite the Web & iOS applications from scratch, 
 
 Before withdrawing from school to join Pinterest, I was the first employee at [Lift](https://coach.me) (now Coach.me) & spent a summer interning at [Apple](https://apple.com).
 
-I live in Kansas City with my [wife](https://linkedin.com/in/makmontgomery/) & our [son](https://twitter.com/Connor/status/1161355210884812801).
+I live in Kansas City with my [wife](https://linkedin.com/in/makmontgomery/) & our [son](https://twitter.com/Connor/status/1161355210884812801). In my spare time, I play tennis.
 
-I'm active on [Twitter](https://twitter.com/connor), [GitHub](https://github.com/connor) & [Pinterest](https://pinterest.com/cnnr/). Or you can just send me a [note](mailto:c@cnnr.me?subject=Hello!).
+You can find me on [Twitter](https://twitter.com/connor), [GitHub](https://github.com/connor) & [Pinterest](https://pinterest.com/cnnr/). Or you can just send me a [note](mailto:c@cnnr.me?subject=Hello!).
 
 High five 🖐🏻
